@@ -11,15 +11,23 @@ import RealityKit
 struct ContentView : View {
     @State var buttonPressed = false
     @State var boxAnchor = try! Experience.loadBox()
-    
+    @State var pressed = false
+    var hitCounter: Int = 0
     var body: some View {
         
         VStack{
             ARViewContainer(boxAnchor: $boxAnchor, buttonPressed: $buttonPressed).edgesIgnoringSafeArea(.all)
             
-            Button("play", action: {
-                boxAnchor.notifications.startNotification.post()
-            })
+            if(pressed == false){
+                Button("play", action: {
+                    pressed = true
+                    boxAnchor.notifications.startNotification.post()
+                })
+            }else{
+                //TextField(hitCounter, text: <#Binding<String>#>)
+                //self.boxAnchor.actions.planeWasHit.onAction = {}
+                Text(String(hitCounter))
+            }
             
             
         }
@@ -31,6 +39,7 @@ struct ARViewContainer: UIViewRepresentable {
     var boxAnchor: Binding<Experience.Box>
     var buttonPressed : Binding<Bool>
     let arView = ARView(frame: .zero)
+    @State var hitCounter: Int = 0
     
     func makeUIView(context: Context) -> ARView {
         
@@ -40,8 +49,10 @@ struct ARViewContainer: UIViewRepresentable {
         
         //let boxAnchor = try! Experience.loadBox()
         
-        // Add the box anchor to the scene
+        //self.boxAnchor.wrappedValue.actions.planeWasHit.onAction = { entity in print("Plane was Hit") }
+//        self.boxAnchor.wrappedValue.actions.planeWasHit.onAction = { entity in ContentView(hitCounter: $hitCounter += 1) }
         
+        // Add the box anchor to the scene
         arView.scene.anchors.append(boxAnchor.wrappedValue)
         
         return arView
